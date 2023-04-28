@@ -6,9 +6,10 @@
 /**
  * Function to create a new node and initialize its data and next pointers.
  */
-struct node *createNode(char *data) {
+struct node *createNode(char *data, int key) {
     struct node *new_node = (struct node *) malloc(sizeof(struct node));
     new_node->data = strdup(data);
+    new_node->key = key;
     new_node->next = NULL;
     return new_node;
 }
@@ -16,8 +17,8 @@ struct node *createNode(char *data) {
 /**
  * Function to insert a new node at the end of the linked list.
  */
-void insertNode(struct node **head, char *data) {
-    struct node *new_node = createNode(data);
+struct node *insertNode(struct node **head, char *data, int key) {
+    struct node *new_node = createNode(data, key);
     if (*head == NULL) {
         *head = new_node;
     } else {
@@ -27,6 +28,7 @@ void insertNode(struct node **head, char *data) {
         }
         tmp->next = new_node; // Reached the end of the list!
     }
+    return new_node;
 }
 
 /**

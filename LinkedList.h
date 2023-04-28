@@ -5,11 +5,12 @@
 struct node {
     char *data;
     struct node *next;
+    int key;
 };
 
-struct node *createNode(char *data);
+struct node *createNode(char *data, int key);
 
-void insertNode(struct node **head, char *data);
+struct node* insertNode(struct node **head, char *data, int key);
 
 void printList(struct node *head);
 
