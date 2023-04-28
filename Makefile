@@ -1,16 +1,16 @@
 all: Coder
 
-Coder: coder.o codec.h queue.a thpool.a
-	gcc -o Coder coder.o ./libCodec.so  
+Coder: coder.c codec.h LinkedList.c LinkedList.h
+	gcc $^ ./libCodec.so -o $@
 
-queue.a: queue.o
-	ar rcs queue.a queue.o
+#queue.a: queue.o
+#	ar rcs queue.a queue.o
 
-thpool.a: thpool.o
-	ar rcs thpool.a thpool.o -lpthread
+#thpool.a: thpool.o
+#	ar rcs thpool.a thpool.o -lpthread
 
-%.o: %.c
-	gcc -c $< -o $@
+#%.o: %.c
+#	gcc -c $< -o $@
 
 .PHONY: all clean
 clean:

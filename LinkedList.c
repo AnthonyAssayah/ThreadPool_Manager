@@ -1,0 +1,54 @@
+#include <string.h>
+#include <stdio.h>
+#include "LinkedList.h"
+#include "stdlib.h"
+
+/**
+ * Function to create a new node and initialize its data and next pointers.
+ */
+struct node *createNode(char *data) {
+    struct node *new_node = (struct node *) malloc(sizeof(struct node));
+    new_node->data = strdup(data);
+    new_node->next = NULL;
+    return new_node;
+}
+
+/**
+ * Function to insert a new node at the end of the linked list.
+ */
+void insertNode(struct node **head, char *data) {
+    struct node *new_node = createNode(data);
+    if (*head == NULL) {
+        *head = new_node;
+    } else {
+        struct node *tmp = *head;
+        while (tmp->next != NULL) {
+            tmp = tmp->next;
+        }
+        tmp->next = new_node; // Reached the end of the list!
+    }
+}
+
+/**
+ * Function to print the contents of the linked list.
+ */
+void printList(struct node *head) {
+    struct node *tmp = head;
+    while (tmp != NULL) {
+        printf("%s", tmp->data);
+        tmp = tmp->next;
+    }
+}
+
+/**
+ * Function to free the memory allocated to the linked list nodes
+ */
+void freeList(struct node *head) {
+    struct node *tmp;
+    while (head != NULL) {
+        tmp = head;
+        head = head->next;
+        free(tmp->data);
+        free(tmp);
+    }
+}
