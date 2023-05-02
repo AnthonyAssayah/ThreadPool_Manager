@@ -1,11 +1,15 @@
+CC=gcc
+FLAGS=-Wall -g
+
+.PHONY: all
 all: coder
 
 coder: coder.c codec.h LinkedList.c LinkedList.h ThreadPool.c ThreadPool.h
-	gcc $^ -lpthread ./libCodec.so -o $@
+	$(CC) $(FLAGS) $^ -lpthread ./libCodec.so -o $@
 
-.PHONY: all clean
+.PHONY: clean
 clean:
-	rm -rIf coder *.o *.a
+	rm -rf coder *.o
 
 
 
