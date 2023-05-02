@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/sysinfo.h>
+#include <time.h>
 #include "LinkedList.h"
 #include "ThreadPool.h"
 
@@ -18,42 +19,34 @@ void worker(void *arg) {
 }
 
 int main(int argc, char *argv[]) {
-    int cnt = 0;
-    int key = 0;
-    int enc = 0;
-    int dec = 0;
     char c;
-    for (int i = 1; i < argc; i++) {
-
-        if (strcmp(argv[i], "-e") == 0) {
-            enc = 1;
-            codecFunc = encrypt;
-        } else if (strcmp(argv[i], "-d") == 0) {
-            dec = 1;
-            codecFunc = decrypt;
-        } else if (i == 1) {
-            key = atoi(argv[1]);
-        } else {
-            printf("Invalid input\n");
-            printf("coder key -d/-e < input_file > output_file\n");
-            return 1;
-        }
+    int cnt = 0;
+    //*** VALIDATE ARGUMENTS ***//
+    if (argc != 3) {
+        fprintf(stderr, "Invalid input!\n"
+                        "Usage:\n"
+                        "(1) ./coder key -e/-d < input_file > output_file\n"
+                        "(2) cat input_file | ./coder 2 -e/-d > output_file\n");
+        return 2;
     }
-    if (enc == 1 && dec == 1) {
-        printf("You can't encrypt and decrypt at the same time\n");
-        return 1;
+    if (strcmp(argv[2], "-e") == 0) {
+        codecFunc = encrypt;
+    } else if (strcmp(argv[2], "-d") == 0) {
+        codecFunc = decrypt;
+    } else {
+        fprintf(stderr, "You must choose to encrypt or decrypt!\n"
+                        "Valid flags: -e or -d\n");
+        return 3;
     }
-    if (enc == 0 && dec == 0) {
-        printf("You must choose to encrypt or decrypt\n");
-        return 1;
-    }
+    int key = atoi(argv[1]); // Get encryption / decryption key
 
-
+    //*** HANDLE ENCRYPTION / DECRYPTION ***//
     char data[MAX_SIZE + 1];
     memset(data, 0, MAX_SIZE + 1);
     struct node *head = NULL; // Linked List to dynamically save data!
     struct node *new_node = NULL;
 
+    time_t begin = time(NULL);
     int n_threads = get_nprocs() + 1; // Maximum number of threads available
 //    int n_threads = 1;
     tpool_t *tm = tpool_create(n_threads);
@@ -79,5 +72,9 @@ int main(int argc, char *argv[]) {
     printList(head);
     freeList(head);
     tpool_destroy(tm);
+
+    // calculate elapsed time by finding difference (end - begin)
+    time_t end = time(NULL);
+    fprintf(stderr, "The elapsed time is %ld seconds\n", (end - begin));
     return 0;
 }
