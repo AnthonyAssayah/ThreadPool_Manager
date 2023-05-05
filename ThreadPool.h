@@ -1,20 +1,19 @@
 #ifndef THREADPOOL_MANAGER_THREADPOOL_H
 #define THREADPOOL_MANAGER_THREADPOOL_H
 
-#include <stdbool.h>
 #include <stddef.h>
 
 struct tpool;
 typedef struct tpool tpool_t;
 
-typedef void (*thread_func_t)(void *arg);
+typedef void (*threadFunc)(void *arg);
 
-tpool_t *tpool_create(size_t num);
+tpool_t *tpoolCreate(size_t num);
 
-void tpool_destroy(tpool_t *tm);
+void tpoolDestroy(tpool_t *pool);
 
-bool tpool_add_work(tpool_t *tm, thread_func_t func, void *arg);
+int tpoolAddTask(tpool_t *pool, threadFunc func, void *arg);
 
-void tpool_wait(tpool_t *tm);
+void tpoolWait(tpool_t *pool);
 
 #endif //THREADPOOL_MANAGER_THREADPOOL_H

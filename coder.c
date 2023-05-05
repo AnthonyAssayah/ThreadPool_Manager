@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <sys/sysinfo.h>
 #include <time.h>
+#include <unistd.h>
+#include <pthread.h>
 #include "LinkedList.h"
 #include "ThreadPool.h"
 
@@ -19,8 +21,6 @@ void worker(void *arg) {
 }
 
 int main(int argc, char *argv[]) {
-    char c;
-    int cnt = 0;
     //*** VALIDATE ARGUMENTS ***//
     if (argc != 3) {
         fprintf(stderr, "Invalid input!\n"
@@ -41,22 +41,27 @@ int main(int argc, char *argv[]) {
     int key = atoi(argv[1]); // Get encryption / decryption key
 
     //*** HANDLE ENCRYPTION / DECRYPTION ***//
+    char c;
+    int cnt = 0;
     char data[MAX_SIZE + 1];
     memset(data, 0, MAX_SIZE + 1);
     struct node *head = NULL; // Linked List to dynamically save data!
     struct node *new_node = NULL;
 
+    pthread_mutex_t mutex;
+    pthread_mutex_init(&mutex, NULL);
+
     time_t begin = time(NULL);
-    int n_threads = get_nprocs() + 1; // Maximum number of threads available
+    int n_threads = get_nprocs(); // Maximum number of threads available
 //    int n_threads = 1;
-    tpool_t *tm = tpool_create(n_threads);
+    tpool_t *pool = tpoolCreate(n_threads);
 
     while ((c = getchar()) != EOF) {
         data[cnt++] = c;
         if (cnt == MAX_SIZE) {
             data[cnt] = '\0';
             new_node = insertNode(&head, data, key);
-            tpool_add_work(tm, worker, new_node);
+            tpoolAddTask(pool, worker, new_node);
             cnt = 0;
         }
     }
@@ -64,14 +69,15 @@ int main(int argc, char *argv[]) {
     if (cnt > 0) {
         data[cnt] = '\0';
         new_node = insertNode(&head, data, key);
-        tpool_add_work(tm, worker, new_node);
+        tpoolAddTask(pool, worker, new_node);
+        sleep(1);
     }
 
-    tpool_wait(tm);
+    tpoolWait(pool);
+    tpoolDestroy(pool);
 
     printList(head);
     freeList(head);
-    tpool_destroy(tm);
 
     // calculate elapsed time by finding difference (end - begin)
     time_t end = time(NULL);

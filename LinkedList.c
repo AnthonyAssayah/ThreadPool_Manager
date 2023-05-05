@@ -36,7 +36,10 @@ struct node *insertNode(struct node **head, char *data, int key) {
  */
 void printList(struct node *head) {
     struct node *tmp = head;
+    int ctr = 0;
     while (tmp != NULL) {
+        ++ctr;
+        fprintf(stderr, "%s, iterations: %d\n", tmp->data, ctr);
         printf("%s", tmp->data);
         tmp = tmp->next;
     }
