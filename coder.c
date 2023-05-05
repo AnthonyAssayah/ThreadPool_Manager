@@ -4,8 +4,6 @@
 #include <stdlib.h>
 #include <sys/sysinfo.h>
 #include <time.h>
-#include <unistd.h>
-#include <pthread.h>
 #include "LinkedList.h"
 #include "ThreadPool.h"
 
@@ -18,6 +16,7 @@ void worker(void *arg) {
     int key = current->key;
     char *data = current->data;
     codecFunc(data, key);
+    current->status = 1;
 }
 
 int main(int argc, char *argv[]) {
@@ -48,9 +47,6 @@ int main(int argc, char *argv[]) {
     struct node *head = NULL; // Linked List to dynamically save data!
     struct node *new_node = NULL;
 
-    pthread_mutex_t mutex;
-    pthread_mutex_init(&mutex, NULL);
-
     time_t begin = time(NULL);
     int n_threads = get_nprocs(); // Maximum number of threads available
 //    int n_threads = 1;
@@ -70,14 +66,12 @@ int main(int argc, char *argv[]) {
         data[cnt] = '\0';
         new_node = insertNode(&head, data, key);
         tpoolAddTask(pool, worker, new_node);
-        sleep(1);
     }
 
-    tpoolWait(pool);
-    tpoolDestroy(pool);
+    printList_t(head);
 
-    printList(head);
     freeList(head);
+    tpoolDestroy(pool);
 
     // calculate elapsed time by finding difference (end - begin)
     time_t end = time(NULL);

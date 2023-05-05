@@ -11,6 +11,7 @@ struct node *createNode(char *data, int key) {
     new_node->data = strdup(data);
     new_node->key = key;
     new_node->next = NULL;
+    new_node->status = 0;
     return new_node;
 }
 
@@ -32,17 +33,16 @@ struct node *insertNode(struct node **head, char *data, int key) {
 }
 
 /**
- * Function to print the contents of the linked list.
+ * Thread safe function to print the contents of the linked list.
  */
-void printList(struct node *head) {
-    struct node *tmp = head;
-    int ctr = 0;
+void *printList_t(void *arg) {
+    struct node *tmp = arg; // arg = the head of the LinkedList
     while (tmp != NULL) {
-        ++ctr;
-        fprintf(stderr, "%s, iterations: %d\n", tmp->data, ctr);
+        while (tmp->status == 0); // busy wait
         printf("%s", tmp->data);
         tmp = tmp->next;
     }
+    return NULL;
 }
 
 /**
