@@ -3,7 +3,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/sysinfo.h>
-#include <time.h>
 #include "LinkedList.h"
 #include "ThreadPool.h"
 
@@ -47,9 +46,7 @@ int main(int argc, char *argv[]) {
     struct node *head = NULL; // Linked List to dynamically save data!
     struct node *new_node = NULL;
 
-    time_t begin = time(NULL);
     int n_threads = get_nprocs(); // Maximum number of threads available
-//    int n_threads = 1;
     tpool_t *pool = tpoolCreate(n_threads);
 
     while ((c = getchar()) != EOF) {
@@ -72,9 +69,5 @@ int main(int argc, char *argv[]) {
 
     freeList(head);
     tpoolDestroy(pool);
-
-    // calculate elapsed time by finding difference (end - begin)
-    time_t end = time(NULL);
-    fprintf(stderr, "The elapsed time is %ld seconds\n", (end - begin));
     return 0;
 }
