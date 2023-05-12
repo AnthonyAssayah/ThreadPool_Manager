@@ -9,7 +9,7 @@ or decrypt it using the algorithm and write the output to stdOut.
 
 To use the CMD tool, you can run commands with the following syntax:
 
-```bash
+```
 coder key [-e | -d ] < my_original_file > encrypted_file
 ```
 
@@ -27,7 +27,7 @@ where:
 
 The tool can also be used with piping by passing data through the CMD tool, as shown in this example:
 
-```bash
+```
 cat my_original_file | coder key [-e | -d] > encrypted_file
 ```
 
@@ -38,7 +38,7 @@ After running `make` command in the terminal.
 Suppose you have a text file that you want to encrypt with a key of 5. You can use the following command to achieve
 this:
 
-```bash
+```
 ./coder 5 -e < my_original_file > encrypted_text.txt
 ```
 
@@ -48,7 +48,7 @@ using the `libCodec.so` library with the specified key of 5. The output is redir
 
 To decrypt the encrypted text in encrypted_text.txt back to the original text, you can use the following command:
 
-```bash
+```
 ./coder 5 -d < encrypted_text.txt > decrypted_text.txt
 ```
 
