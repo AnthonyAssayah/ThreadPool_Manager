@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <pthread.h>
-#include <stdio.h>
 #include "ThreadPool.h"
 
 // https://nachtimwald.com/2019/04/12/thread-pool-in-c/
